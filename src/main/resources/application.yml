@@ -6,11 +6,6 @@ spring:
     mongodb:
       uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}?authSource=${MONGO_DB_AUTH}
 
-logging:
-  level:
-    org.springframework.data.mongodb: DEBUG
-    org.springframework.core.env: DEBUG
-
 server:
   forward-headers-strategy: framework
   servlet:
@@ -29,3 +24,13 @@ springdoc:
     filter: true
   api-docs:
     path: /api-docs
+
+logging:
+  level:
+    org:
+      springframework:
+        validation: DEBUG
+        core:
+          env: DEBUG
+      data:
+        mongodb: DEBUG

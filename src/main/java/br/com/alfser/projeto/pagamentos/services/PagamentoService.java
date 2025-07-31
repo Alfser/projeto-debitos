@@ -26,7 +26,8 @@ public class PagamentoService {
         return pagamentoRepository.findAll();
     }
 
-    private boolean isPagamentoComCartao(MetodoPagamento metodo) {
+    public boolean isPagamentoComCartao(MetodoPagamento metodo) {
         return metodo == MetodoPagamento.CARTAO_CREDITO || metodo == MetodoPagamento.CARTAO_DEBITO;
     }
+
 }

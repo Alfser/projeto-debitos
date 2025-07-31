@@ -3,12 +3,11 @@ package br.com.alfser.projeto.pagamentos.dtos;
 import br.com.alfser.projeto.pagamentos.common.MetodoPagamento;
 import br.com.alfser.projeto.pagamentos.common.StatusPagamento;
 import br.com.alfser.projeto.pagamentos.models.Pagamento;
-import lombok.Data;
 import org.bson.types.ObjectId;
 
 import java.math.BigDecimal;
 
-@Data
+
 public class PagamentoDTO {
     private String id;
     private Long idPagamento;
