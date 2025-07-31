@@ -42,4 +42,50 @@ public class PagamentoHandlerErrors {
 
         return ResponseEntity.badRequest().body(response);
     }
+
+    @ExceptionHandler(PagamentoNotAvailableChangeException.class)
+    public ResponseEntity<ErrorResponse> handlePagamentoNotAvailableChangeException(
+            PagamentoNotAvailableChangeException ex,
+            HttpServletRequest request) {
+
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                "Pagamento não pode ser alterado",
+                request.getRequestURI(),
+                List.of(ex.getMessage())
+        );
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(PagamentoNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handlePagamentoNotFoundException(
+            PagamentoNotFoundException ex,
+            HttpServletRequest request) {
+
+        return new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                "Pagamento não encontrado",
+                request.getRequestURI(),
+                List.of(ex.getMessage())
+        );
+    }
+
+    @ExceptionHandler(InvalidPagamentoUpdateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleInvalidPagamentoUpdateException(
+            InvalidPagamentoUpdateException ex,
+            HttpServletRequest request) {
+
+        return new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                "Transição de status inválida",
+                request.getRequestURI(),
+                List.of(ex.getMessage())
+        );
+    }
 }

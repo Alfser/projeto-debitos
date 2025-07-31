@@ -5,8 +5,8 @@ import br.com.alfser.projeto.pagamentos.common.StatusPagamento;
 import br.com.alfser.projeto.pagamentos.dtos.PagamentoDTO;
 import br.com.alfser.projeto.pagamentos.models.Pagamento;
 import org.bson.types.ObjectId;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-@ExtendWith(MockitoExtension.class)
 public class PagamentoDTOTest {
 
     private static final String ID_VALIDO = "507f1f77bcf86cd799439011";

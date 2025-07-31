@@ -4,6 +4,7 @@ import br.com.alfser.projeto.pagamentos.common.MetodoPagamento;
 import br.com.alfser.projeto.pagamentos.common.StatusPagamento;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
@@ -13,7 +14,9 @@ public class Pagamento {
 
     @Id
     ObjectId id = new ObjectId();
-    private Long idPagamento;
+
+    @Indexed(unique = true)
+    private Long idPagamento = (long) new ObjectId().getTimestamp();
     private String cpfCnpj;
     private MetodoPagamento metodoPagamento;
     private String numeroCartao;
