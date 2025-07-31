@@ -1,0 +1,27 @@
+services:
+  mongodb:
+    container_name: mongodb
+    image: mongo:8
+    restart: always
+    ports:
+      - ${MONGO_PORT:-27017}:27017
+    volumes:
+      - mongo_data:/data
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    env_file:
+      - .env
+  backend-pagamento:
+    build:
+      context: .
+    env_file:
+      - .env
+    image: backend-pagamento
+    restart: always
+    environment:
+      - TZ=America/Belem
+
+volumes:
+  mongo_data:
+    driver: local
