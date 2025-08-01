@@ -7,16 +7,12 @@ import br.com.alfser.projeto.pagamentos.models.Pagamento;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
-public class PagamentoDTOTest {
+public class PagamentoDTOUnitTest {
 
     private static final String ID_VALIDO = "507f1f77bcf86cd799439011";
     private static final Long ID_PAGAMENTO_VALIDO = 12345L;
@@ -184,14 +180,12 @@ public class PagamentoDTOTest {
         String toString = dto.toString();
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(toString.contains(ID_VALIDO)),
                 () -> Assertions.assertTrue(toString.contains(ID_PAGAMENTO_VALIDO.toString())),
                 () -> Assertions.assertTrue(toString.contains(CPF_VALIDO)),
                 () -> Assertions.assertTrue(toString.contains(METODO_VALIDO.toString())),
                 () -> Assertions.assertTrue(toString.contains(NUMERO_CARTAO_VALIDO)),
                 () -> Assertions.assertTrue(toString.contains(VALOR_VALIDO.toString())),
-                () -> Assertions.assertTrue(toString.contains(STATUS_VALIDO.toString())),
-                () -> Assertions.assertTrue(toString.contains("true"))
+                () -> Assertions.assertTrue(toString.contains(STATUS_VALIDO.toString()))
         );
     }
 

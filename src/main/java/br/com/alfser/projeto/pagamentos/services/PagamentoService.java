@@ -25,8 +25,10 @@ import java.util.List;
 
 @Service
 public class PagamentoService {
+
     private final PagamentoRepository pagamentoRepository;
     private final MongoTemplate mongoTemplate;
+
     public PagamentoService(PagamentoRepository pagamentoRepository, MongoTemplate mongoTemplate){
         this.pagamentoRepository = pagamentoRepository;
         this.mongoTemplate = mongoTemplate;
@@ -40,7 +42,6 @@ public class PagamentoService {
     }
 
     public Page<Pagamento> listar(PagamentoFilterDTO filters, Pageable pageable){
-
         Query query = PagamentoCriteriaQuery.withFilters(filters).with(pageable);
         List<Pagamento> results = mongoTemplate.find(query, Pagamento.class);
         Query countQuery = PagamentoCriteriaQuery.withFilters(filters);

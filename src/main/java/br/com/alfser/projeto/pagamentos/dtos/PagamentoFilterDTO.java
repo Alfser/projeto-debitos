@@ -6,11 +6,35 @@ public class PagamentoFilterDTO {
     private Long idPagamento;
     private String cpfCnpj;
     private StatusPagamento status;
+    private Boolean ativo;
+
+    public PagamentoFilterDTO(Long idPagamento, String cpfCnpj, StatusPagamento status, Boolean ativo) {
+        this.idPagamento = idPagamento;
+        this.cpfCnpj = cpfCnpj;
+        this.status = status;
+        this.ativo = ativo;
+    }
 
     public PagamentoFilterDTO(Long idPagamento, String cpfCnpj, StatusPagamento status) {
         this.idPagamento = idPagamento;
         this.cpfCnpj = cpfCnpj;
         this.status = status;
+    }
+
+    public PagamentoFilterDTO(Long idPagamento) {
+        this.idPagamento = idPagamento;
+    }
+
+    public PagamentoFilterDTO(String cpfCnpj) {
+        this.cpfCnpj = cpfCnpj;
+    }
+
+    public PagamentoFilterDTO(StatusPagamento status) {
+        this.status = status;
+    }
+
+    public PagamentoFilterDTO(Boolean ativo) {
+        this.ativo = ativo;
     }
 
     public PagamentoFilterDTO() {
@@ -38,5 +62,13 @@ public class PagamentoFilterDTO {
 
     public void setStatus(StatusPagamento status) {
         this.status = status;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
     }
 }

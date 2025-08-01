@@ -42,12 +42,13 @@ public class PagamentoControllers {
             @RequestParam(required = false) Long idPagamento,
             @RequestParam(required = false) String cpfCnpj,
             @RequestParam(required = false) StatusPagamento status,
+            @RequestParam(required = false) Boolean ativo,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "idPagamento,desc") String sort){
         Pageable pageable = PageRequest.of(page, size, PageUtils.parseSort(sort));
         Page<Pagamento> resultPage = pagamentoService.listar(
-                new PagamentoFilterDTO(idPagamento, cpfCnpj, status),
+                new PagamentoFilterDTO(idPagamento, cpfCnpj, status, ativo),
                 pageable
         );
         return new SinglePageResponse<>(

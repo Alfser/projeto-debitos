@@ -24,7 +24,11 @@ public class PagamentoCriteriaQuery {
         }
 
         if (filters.getStatus() != null) {
-            criteria.add(Criteria.where("Status").is(filters.getStatus()));
+            criteria.add(Criteria.where("status").is(filters.getStatus()));
+        }
+
+        if (filters.getAtivo() != null) {
+            criteria.add(Criteria.where("ativo").is(filters.getAtivo()));
         }
 
         if (!criteria.isEmpty()) {

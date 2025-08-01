@@ -6,6 +6,7 @@ import br.com.alfser.projeto.pagamentos.models.Pagamento;
 import org.bson.types.ObjectId;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 
 public class PagamentoDTO {
@@ -127,5 +128,29 @@ public class PagamentoDTO {
         dto.setStatus(pagamento.getStatus());
         dto.setAtivo(pagamento.isAtivo());
         return dto;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        PagamentoDTO that = (PagamentoDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(idPagamento, that.idPagamento) && Objects.equals(cpfCnpj, that.cpfCnpj) && metodoPagamento == that.metodoPagamento && Objects.equals(numeroCartao, that.numeroCartao) && Objects.equals(valor, that.valor) && status == that.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, idPagamento, cpfCnpj, metodoPagamento, numeroCartao, valor, status);
+    }
+
+    @Override
+    public String toString() {
+        return "PagamentoDTO{" +
+                "idPagamento=" + idPagamento +
+                ", cpfCnpj='" + cpfCnpj + '\'' +
+                ", metodoPagamento=" + metodoPagamento +
+                ", numeroCartao='" + numeroCartao + '\'' +
+                ", valor=" + valor +
+                ", status=" + status +
+                '}';
     }
 }
