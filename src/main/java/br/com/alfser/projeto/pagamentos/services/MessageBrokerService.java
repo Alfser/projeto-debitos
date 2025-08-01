@@ -24,7 +24,6 @@ public class MessageBrokerService {
         kafkaTemplate.send(BrokerTopic.PAGAMENTO_PENDENTE, json);
     }
 
-
     @KafkaListener(topics = BrokerTopic.PAGAMENTO_STATUS)
     public void processMessage(String json) throws JsonProcessingException {
         PagamentoUpdateStatusDTO dto = objectMapper.readValue(json, PagamentoUpdateStatusDTO.class);
