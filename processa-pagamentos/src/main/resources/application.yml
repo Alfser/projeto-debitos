@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: processa-pagamentos
+
+  data:
+    mongodb:
+      uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}?authSource=${MONGO_DB_AUTH}
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVER}
+    consumer:
+      group-id: "payment-processor-group"
+
+server:
+  forward-headers-strategy: framework
+  servlet:
+    context-path: ${PATH_PREFIX:/}
+  port: 8091
+  compression:
+    enabled: true
+    min-response-size: 2048
+    mime-types:
+      - application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    use-root-path: true
+    filter: true
+  api-docs:
+    path: /api-docs
+
+logging:
+  level:
+    org:
+      springframework:
+        validation: DEBUG
+        core:
+          env: DEBUG
+      data:
+        mongodb: DEBUG
