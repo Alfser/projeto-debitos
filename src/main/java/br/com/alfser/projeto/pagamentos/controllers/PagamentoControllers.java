@@ -5,27 +5,17 @@ import br.com.alfser.projeto.pagamentos.common.SinglePageResponse;
 import br.com.alfser.projeto.pagamentos.common.StatusPagamento;
 import br.com.alfser.projeto.pagamentos.dtos.PagamentoCreateDTO;
 import br.com.alfser.projeto.pagamentos.dtos.PagamentoFilterDTO;
-import br.com.alfser.projeto.pagamentos.dtos.UpdateStatusDTO;
-import br.com.alfser.projeto.pagamentos.erros.InvalidPagamentoUpdateException;
-import br.com.alfser.projeto.pagamentos.erros.PagamentoNotAvailableChangeException;
-import br.com.alfser.projeto.pagamentos.erros.PagamentoNotFoundException;
+import br.com.alfser.projeto.pagamentos.dtos.PagamentoUpdateStatusDTO;
 import br.com.alfser.projeto.pagamentos.models.Pagamento;
 import br.com.alfser.projeto.pagamentos.services.PagamentoService;
 import br.com.alfser.projeto.pagamentos.dtos.PagamentoDTO;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
-import org.springdoc.core.converters.models.DefaultPageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping
@@ -72,7 +62,7 @@ public class PagamentoControllers {
 
     @PutMapping("/pagamento/status")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void atualizarStatusPagamento(@Valid UpdateStatusDTO updateStatusDTO){
+    public void atualizarStatusPagamento(@Valid PagamentoUpdateStatusDTO updateStatusDTO){
         pagamentoService.atualizarStatusPagamento(updateStatusDTO.getIdPagamento(), updateStatusDTO.getStatus());
     }
 }

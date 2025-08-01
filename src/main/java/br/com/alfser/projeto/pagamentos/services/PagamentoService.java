@@ -1,5 +1,6 @@
 package br.com.alfser.projeto.pagamentos.services;
 
+import br.com.alfser.projeto.pagamentos.dtos.PagamentoUpdateStatusDTO;
 import br.com.alfser.projeto.pagamentos.erros.InvalidPagamentoUpdateException;
 import br.com.alfser.projeto.pagamentos.erros.PagamentoNotAvailableChangeException;
 import br.com.alfser.projeto.pagamentos.erros.PagamentoNotFoundException;
@@ -9,6 +10,7 @@ import br.com.alfser.projeto.pagamentos.common.StatusPagamento;
 import br.com.alfser.projeto.pagamentos.dtos.PagamentoFilterDTO;
 import br.com.alfser.projeto.pagamentos.models.Pagamento;
 import br.com.alfser.projeto.pagamentos.specification.PagamentoCriteriaQuery;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
@@ -27,10 +29,12 @@ import java.util.List;
 public class PagamentoService {
 
     private final PagamentoRepository pagamentoRepository;
+    private final MessageBrokerService messageBrokerService;
     private final MongoTemplate mongoTemplate;
 
-    public PagamentoService(PagamentoRepository pagamentoRepository, MongoTemplate mongoTemplate){
+    public PagamentoService(PagamentoRepository pagamentoRepository, MongoTemplate mongoTemplate, MessageBrokerService messageBrokerService){
         this.pagamentoRepository = pagamentoRepository;
+        this.messageBrokerService = messageBrokerService;
         this.mongoTemplate = mongoTemplate;
     }
     public Pagamento criar(Pagamento pagamento) throws IllegalArgumentException{
@@ -38,7 +42,13 @@ public class PagamentoService {
             throw new IllegalArgumentException("Não é permitido model pagamento nulla no sercice de criação de pagamento");
         }
         pagamento.setStatus(StatusPagamento.PENDENTE_PROCESSAMENTO);
-        return pagamentoRepository.save(pagamento);
+        Pagamento pagamentoCreated = pagamentoRepository.save(pagamento);
+        try {
+            messageBrokerService.sendMessage(PagamentoUpdateStatusDTO.from(pagamentoCreated));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return pagamentoCreated;
     }
 
     public Page<Pagamento> listar(PagamentoFilterDTO filters, Pageable pageable){
