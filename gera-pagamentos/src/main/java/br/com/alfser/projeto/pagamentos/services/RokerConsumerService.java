@@ -6,28 +6,25 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MessageBrokerService {
+public class RokerConsumerService {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
+    private final PagamentoService pagamentoService;
 
-    public MessageBrokerService(KafkaTemplate<String, String> kafkaTemplate, ObjectMapper objectMapper) {
+    public RokerConsumerService(KafkaTemplate<String, String> kafkaTemplate, ObjectMapper objectMapper, PagamentoService pagamentoService) {
         this.kafkaTemplate = kafkaTemplate;
         this.objectMapper = objectMapper;
-    }
-
-    public void sendMessage(PagamentoUpdateStatusDTO dto) throws JsonProcessingException {
-        String json = objectMapper.writeValueAsString(dto);
-        System.out.println("PRODUCE MESSAGE: "+json);
-        kafkaTemplate.send(BrokerTopic.PAGAMENTO_PENDENTE, json);
+        this.pagamentoService = pagamentoService;
     }
 
     @KafkaListener(topics = BrokerTopic.PAGAMENTO_STATUS)
     public void processMessage(String json) throws JsonProcessingException {
         PagamentoUpdateStatusDTO dto = objectMapper.readValue(json, PagamentoUpdateStatusDTO.class);
+
+        pagamentoService.atualizarStatusPagamento(dto.getIdPagamento(), dto.getStatus());
         System.out.println("CONSUME MESSAGE: "+json);
         System.out.println("MESSAGE OBJECT: "+dto.toString());
     }

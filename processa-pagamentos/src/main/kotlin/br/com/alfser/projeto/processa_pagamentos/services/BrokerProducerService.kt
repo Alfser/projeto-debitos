@@ -2,6 +2,7 @@ package br.com.alfser.projeto.processa_pagamentos.services
 
 import br.com.alfser.projeto.processa_pagamentos.common.BrokerTopic
 import br.com.alfser.projeto.processa_pagamentos.dtos.PagamentoDTO
+import br.com.alfser.projeto.processa_pagamentos.dtos.PagamentoPendenteDTO
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.kafka.core.KafkaTemplate
@@ -14,7 +15,7 @@ class BrokerProducerService (
 ){
 
     @Throws(JsonProcessingException::class)
-    fun sendMessage(dto: PagamentoDTO?) {
+    fun sendMessage(dto: PagamentoPendenteDTO) {
         val json = objectMapper.writeValueAsString(dto)
         println("PRODUCE MESSAGE: " + json)
         kafkaTemplate.send(BrokerTopic.PAGAMENTO_STATUS, json)

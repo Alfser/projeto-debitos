@@ -22,17 +22,16 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.List;
 
 @Service
 public class PagamentoService {
 
     private final PagamentoRepository pagamentoRepository;
-    private final MessageBrokerService messageBrokerService;
+    private final BrokerProducerService messageBrokerService;
     private final MongoTemplate mongoTemplate;
 
-    public PagamentoService(PagamentoRepository pagamentoRepository, MongoTemplate mongoTemplate, MessageBrokerService messageBrokerService){
+    public PagamentoService(PagamentoRepository pagamentoRepository, MongoTemplate mongoTemplate, BrokerProducerService messageBrokerService){
         this.pagamentoRepository = pagamentoRepository;
         this.messageBrokerService = messageBrokerService;
         this.mongoTemplate = mongoTemplate;
