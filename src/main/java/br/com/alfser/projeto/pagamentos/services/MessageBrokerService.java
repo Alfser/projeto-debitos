@@ -21,7 +21,7 @@ public class MessageBrokerService {
     public void sendMessage(PagamentoUpdateStatusDTO dto) throws JsonProcessingException {
         String json = objectMapper.writeValueAsString(dto);
         System.out.println("PRODUCE MESSAGE: "+json);
-        kafkaTemplate.send(BrokerTopic.PAGAMENTO_STATUS, json);
+        kafkaTemplate.send(BrokerTopic.PAGAMENTO_PENDENTE, json);
     }
 
 

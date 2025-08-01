@@ -10,9 +10,6 @@ spring:
     bootstrap-servers: ${KAFKA_SERVER}
     consumer:
       group-id: "payment-group"
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       properties:
         allow:
           auto:
@@ -20,8 +17,6 @@ spring:
               topics: true
 
     producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
       properties:
         allow:
           auto:
