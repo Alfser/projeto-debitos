@@ -31,7 +31,7 @@ class PagamentoService (private val pagamentoRepository: PagamentoRepository, pr
         update.set("isProcessado", true)
         update.set("status", StatusPagamento.PROCESSADO_SUCESSO)
         val result: UpdateResult = mongoTemplate.updateFirst(query, update, Pagamento::class.java)
-        if(result.modifiedCount == 0L){
+        if(result.modifiedCount > 0L){
             brokerProducerService.sendMessage(PagamentoPendenteDTO(pagamento.idPagamento, StatusPagamento.PROCESSADO_SUCESSO))
         }else{
             brokerProducerService.sendMessage(PagamentoPendenteDTO(pagamento.idPagamento, StatusPagamento.PROCESSADO_FALHA))
