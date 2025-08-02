@@ -16,6 +16,7 @@ services:
   kafka-broker:
     image: apache/kafka:4.0.0
     container_name: broker
+    restart: always
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
