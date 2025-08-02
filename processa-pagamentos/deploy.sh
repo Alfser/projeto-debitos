@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e  # Exit immediately if any command fails
+set -e
 
 
 if [ ! -f ".env" ]; then
@@ -18,22 +18,20 @@ if [ -f .env ]; then
   export $(grep -v '^#' .env | xargs)
 fi
 
-# Build with Maven
-./mvnw clean package -DskipTests -Dmaven.test.skip=true
+# Build with Gradle
+exec ./gradlew clean bootJar
 
 # Verify JAR was created (fixed check)
-if ! ls target/*.jar 1> /dev/null 2>&1; then
-  echo "Error: No JAR file created in target directory!"
-  ls -l target/
+if ! ls build/libs/*.jar 1> /dev/null 2>&1; then
+  echo "Error: No JAR file created in build directory!"
+  ls -l build/libs/
   exit 1
 else
   echo "JAR file successfully created:"
-  ls -l target/*.jar
+  ls -l build/libs/*.jar
 fi
 EOF
 
 chmod +x run.sh
 
 ./run.sh
-
-echo "Build completed successfully"

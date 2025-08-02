@@ -1,27 +1,29 @@
-FROM amazoncorretto:17 AS base
+FROM amazoncorretto:17.0.16-alpine AS builder
 
-VOLUME /tmp
+WORKDIR /app
 
-WORKDIR /var/application
+RUN apk add --no-cache tar gzip bash
 
-FROM base AS builder
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle.kts .
+COPY settings.gradle.kts .
+COPY src src
 
-VOLUME /tmp
+RUN ./gradlew dependencies
 
-WORKDIR /var/application
+COPY . .
 
-RUN yum install -y tar gzip
+RUN chmod +x deploy.sh && ./deploy.sh
 
-COPY ./ ./
+# Image to run
+FROM amazoncorretto:17.0.16-alpine
 
-RUN bash deploy.sh
+WORKDIR /app
 
-FROM base AS runner
+COPY --from=builder /app/build/libs/*.jar application.jar
 
-WORKDIR /var/application
+RUN addgroup -S spring && adduser -S spring -G spring
+USER spring
 
-COPY --from=builder /var/application/target/*.jar app.jar
-
-COPY --from=builder /var/application/src/main/resources/jasper src/main/resources/jasper
-
-ENTRYPOINT java -jar app.jar
+ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-Djava.security.egd=file:/dev/./urandom", "-jar", "application.jar"]

@@ -1,27 +1,28 @@
-FROM amazoncorretto:17 AS base
+FROM amazoncorretto:17.0.16-alpine AS builder
 
-VOLUME /tmp
+WORKDIR /app
 
-WORKDIR /var/application
-
-FROM base AS builder
-
-VOLUME /tmp
-
-WORKDIR /var/application
-
-RUN yum install -y tar gzip
+RUN apk add --no-cache tar gzip bash && \
+    rm -rf /var/cache/apk/*
 
 COPY ./ ./
 
-RUN bash deploy.sh
+RUN chmod +x deploy.sh && ./deploy.sh
 
-FROM base AS runner
+FROM amazoncorretto:17.0.16-alpine
 
-WORKDIR /var/application
+WORKDIR /app
 
-COPY --from=builder /var/application/target/*.jar app.jar
 
-COPY --from=builder /var/application/src/main/resources/jasper src/main/resources/jasper
+COPY --from=builder /app/target/*.jar application.jar
 
-ENTRYPOINT java -jar app.jar
+RUN addgroup -S appuser && \
+    adduser -S appuser -G appuser && \
+    chown appuser:appuser /app
+USER appuser
+
+
+ENTRYPOINT ["java", \
+    "-XX:+UseContainerSupport", \
+    "-Djava.security.egd=file:/dev/./urandom", \
+    "-jar", "application.jar"]

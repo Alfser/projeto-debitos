@@ -36,6 +36,7 @@ services:
       - .env
     networks:
       - kafka-net
+      - default
     healthcheck:
       test: [ "CMD", "kafka-topics", "--list", "--bootstrap-server", "broker:9092" ]
       interval: 5s
@@ -44,10 +45,11 @@ services:
 
   servico-gera-pagamentos:
     build:
-      context: gera-pagamentos/Dockerfile
+      context: gera-pagamentos
+      dockerfile: Dockerfile
     env_file:
-      - .env
-    image: backend-pagamento
+      - gera-pagamentos/.env
+    image: service-gera-pagamentos
     restart: always
     environment:
       - TZ=America/Belem
@@ -57,13 +59,16 @@ services:
     depends_on:
       - mongodb
       - kafka-broker
+    ports:
+      - "8090:8090"
   
   servico-processa-pagamentos:
     build:
-      context: processa-pagamentos/Dockerfile
+      context: processa-pagamentos
+      dockerfile: Dockerfile
     env_file:
-      - .env
-    image: backend-pagamento
+      - processa-pagamentos/.env
+    image: service-processa-pagamento
     restart: always
     environment:
       - TZ=America/Belem
@@ -73,6 +78,8 @@ services:
     depends_on:
       - mongodb
       - kafka-broker
+    ports:
+      - "8091:8091"
 
 volumes:
   mongo_data:

@@ -4,11 +4,9 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB_PROCESSA}?authSource=${MONGO_DB_AUTH}
+      uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}?authSource=${MONGO_DB_AUTH}
   kafka:
     bootstrap-servers: ${KAFKA_SERVER}
-    consumer:
-      group-id: "payment-processor-group"
 
 server:
   forward-headers-strategy: framework

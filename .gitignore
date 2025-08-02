@@ -1,3 +1,5 @@
 **/**/HELP.md
 /**/.idea
 .env
+/**/target/
+/**/build/

@@ -1,12 +1,12 @@
 package br.com.alfser.projeto.processa_pagamentos
 
-import org.junit.jupiter.api.Test
+import org.springframework.boot.fromApplication
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.with
 
-@SpringBootTest
-class ProcessaPagamentosApplicationTests {
-	@Test
-	fun contextLoads() {
-	}
+@SpringBootTest(classes = [ProcessaPagamentosApplication::class])
+class ProcessaPagamentosApplicationTests
 
+fun main(args: Array<String>) {
+	fromApplication<ProcessaPagamentosApplication>().with(TestcontainersConfiguration::class).run(*args)
 }
