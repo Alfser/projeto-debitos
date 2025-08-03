@@ -96,10 +96,12 @@ export class PagamentoListComponent implements OnInit {
       });
   }
 
-  processarPagamento(idPagamento: number): void {
+  processar(idPagamento: number): void {
     this.pagamentoService.processar(idPagamento)
       .subscribe({
         next: () => {
+          debounceTime(3000)
+          this.carregarPagamentos()
           const index = this.pagamentos.findIndex(p => p.idPagamento === idPagamento);
           if (index !== -1) {
             console.log("Pagamento processado: ", this.pagamentos[index])
@@ -109,6 +111,20 @@ export class PagamentoListComponent implements OnInit {
           this.error = err;
         }
       });
+  }
+
+  inativar(id: string): void{
+    this.pagamentoService.inativar(id)
+      .subscribe({
+        next: ()=>{
+          this.carregarPagamentos()
+          const index = this.pagamentos.findIndex(p => p.id === id)
+          console.log("Pagamento inativado: ", this.pagamentos[index])
+        },
+        error: (err) => {
+          this.error = err;
+        }
+      })
   }
 
   getStatusClass(status?: StatusPagamento): string {

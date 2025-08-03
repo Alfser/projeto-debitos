@@ -53,10 +53,10 @@
             </div>
           </td>
           <td class="flex col-auto sm:row-auto py-3 px-4 border-b">
-            <button class="text-gray-100 m-2 py-1 text-xl bg-blue-550 border border-transparent rounded-sm size-5/6 hover:bg-blue-650 hover:text-gray-100 mr-2">
+            <button [disabled]="!pagamento.ativo" (click)="inativar(pagamento.id!)" class="text-gray-100 m-2 py-1 text-xl bg-blue-550 border border-transparent rounded-sm size-5/6 hover:bg-blue-650 hover:text-gray-100 disabled:opacity-25 mr-2">
                 Inativar
             </button>
-            <button class="text-blue-550 m-2 py-1 text-xl hover:text-blue-650 border border-blue-550 hover:border-blue-650 rounded-sm size-5/6">
+            <button (click)="processar(pagamento.idPagamento!)" class="text-blue-550 m-2 py-1 text-xl hover:text-blue-650 border border-blue-550 hover:border-blue-650 rounded-sm size-5/6">
                 Processar
             </button>
           </td>
