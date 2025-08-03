@@ -15,7 +15,7 @@
           <option value= >----</option>
           @for (status of statusPagamentos; track $index) {
             <option [value]="status">{{ getStatusText(status) }}</option>
-        }
+          }
       </select>
     </form>
     <button class="text-blue-550 bg-blue-300 w-sm p-1  hover:text-blue-650 border border-blue-550 hover:border-blue-650 rounded-sm">

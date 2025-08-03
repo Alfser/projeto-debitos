@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { PagamentoDTO } from '../../../lib/clients/gera-pagamento/GeraPagamentoApi';
+import { ErrorResponse, PagamentoDTO } from '../../../lib/clients/gera-pagamento/GeraPagamentoApi';
 import { PagamentoService } from '../../service/pagamento-service';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, finalize, Subject, takeUntil } from 'rxjs';
 import { PagamentoListParams } from '../../../lib/clients/services/types';
 import { ObjectUtil } from '../../utils';
+import { NotificationService } from '../../service/notification-service';
 
 type StatusPagamento = 'PENDENTE_PROCESSAMENTO' | 'PROCESSADO_SUCESSO' | 'PROCESSADO_FALHA'
 
@@ -33,6 +34,7 @@ export class PagamentoListComponent implements OnInit {
 
   constructor(
     private pagamentoService: PagamentoService,
+    private notification: NotificationService,
     private formBuilder: FormBuilder
   ){
     this.searchForm = this.formBuilder.group({
@@ -86,43 +88,50 @@ export class PagamentoListComponent implements OnInit {
           this.previousPage = response.page?.previousPage;
           this.totalElements = response.page?.totalElements!;
           this.totalPages = Math.ceil(this.totalElements/this.pageSize);
-          console.log(this.totalElements, this.totalPages, "Calculo total page", this.totalPages)
         },
         error: (err) => {
           this.error = err;
-          this.loading = false;
+          this.onError(err);
         },
         complete: () => console.log('Request completed')
       });
   }
 
   processar(idPagamento: number): void {
+    this.loading = true;
     this.pagamentoService.processar(idPagamento)
+      .pipe(finalize(() => this.loading = false))
       .subscribe({
         next: () => {
-          debounceTime(3000)
+          debounceTime(3000) //Espera para atualizar pagamento consumido do kafka
           this.carregarPagamentos()
           const index = this.pagamentos.findIndex(p => p.idPagamento === idPagamento);
           if (index !== -1) {
             console.log("Pagamento processado: ", this.pagamentos[index])
           }
+          this.onSuccess(`Pagamento ${this.pagamentos[index].idPagamento} processado com sucesso`)
         },
         error: (err) => {
           this.error = err;
+          this.onError(err);
         }
       });
   }
 
   inativar(id: string): void{
+    this.loading = true;
     this.pagamentoService.inativar(id)
+      .pipe(finalize(() => this.loading = false))
       .subscribe({
         next: ()=>{
           this.carregarPagamentos()
           const index = this.pagamentos.findIndex(p => p.id === id)
+          this.onSuccess(`Pagamento ${this.pagamentos[index].idPagamento} inativado`)
           console.log("Pagamento inativado: ", this.pagamentos[index])
         },
         error: (err) => {
           this.error = err;
+          this.onError(err);
         }
       })
   }
@@ -168,4 +177,18 @@ export class PagamentoListComponent implements OnInit {
     this.carregarPagamentos()
   }
 
+  onSuccess(message: string) {
+    this.notification.show({
+      message: message,
+      type: 'success',
+      duration: 3000
+    });
+  }
+
+  onError(error: ErrorResponse) {
+    this.notification.show({
+      message: error.details?.toString()|| "Error ao realizar operação",
+      type: 'error'
+    });
+  }
 }
