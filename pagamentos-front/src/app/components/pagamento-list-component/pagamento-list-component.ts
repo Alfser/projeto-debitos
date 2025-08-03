@@ -1,43 +1,92 @@
 import { Component, OnInit } from '@angular/core';
-import { PagamentoService } from '../../service/pagamento-service';
 import { PagamentoDTO } from '../../../lib/clients/gera-pagamento/GeraPagamentoApi';
-import { tap } from 'rxjs';
+import { PagamentoService } from '../../service/pagamento-service';
+import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, finalize, Subject, takeUntil } from 'rxjs';
+import { PagamentoListParams } from '../../../lib/clients/services/types';
+import { ObjectUtil } from '../../utils';
 
 type StatusPagamento = 'PENDENTE_PROCESSAMENTO' | 'PROCESSADO_SUCESSO' | 'PROCESSADO_FALHA'
 
 @Component({
   selector: 'pagamento-list-component',
-  imports: [],
+  imports: [ReactiveFormsModule],
   templateUrl: './pagamento-list-component.html',
   styleUrl: './pagamento-list-component.css'
 })
 export class PagamentoListComponent implements OnInit {
-  searchTerm: string = '';
-  itemsPerPage: number = 10;
+  searchForm!: FormGroup;
   currentPage: number = 1;
-  totalPages: number = 5;
-  pagesLength: number[] = [5, 10, 20, 50]
+  page: number = 1;
+  nextPage?: number = undefined;
+  previousPage?: number = undefined;
+  pageSize: number = 5;
+  totalPages: number = 0;
+  totalElements: number = 0;
+  pageSizeOptions: number[] = [5, 10, 20, 50]
   statusPagamentos : StatusPagamento[] = ["PENDENTE_PROCESSAMENTO", "PROCESSADO_SUCESSO", "PROCESSADO_FALHA"];
-
   pagamentos: PagamentoDTO[] = []
   loading = false;
   error: any = null;
 
-  constructor(private pagamentoService: PagamentoService){}
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private pagamentoService: PagamentoService,
+    private formBuilder: FormBuilder
+  ){
+    this.searchForm = this.formBuilder.group({
+      searchByIdentificacao: undefined,
+      searcByStatus: undefined,
+    })
+  }
   
   ngOnInit(): void {
-    this.carregarPagamentos()
+    this.setupSearchListener();
+    this.carregarPagamentos();
+  }
+
+  setupSearchListener() {
+    this.searchForm.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged((prev, curr) => 
+          JSON.stringify(prev) === JSON.stringify(curr)
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.currentPage = 0;
+        this.carregarPagamentos();
+      });
   }
   
   carregarPagamentos(): void {
     this.loading = true;
     this.error = null;
+    const searchParams: PagamentoListParams = {
+      cpfCnpj: this.searchForm.get("searchByIdentificacao")?.value,
+      status: this.searchForm.get("searcByStatus")?.value,
+      page: this.page,
+      size: this.pageSize
+    };
 
-    this.pagamentoService.listar({})
+    // Remove valores undefined/null 
+    ObjectUtil.cleanParams<PagamentoListParams>(searchParams)
+
+    this.pagamentoService.listar(searchParams)
+    .pipe(finalize(() => this.loading = false))
     .subscribe({
         next: (response) => {
-          this.pagamentos = response;
-          this.loading = false;
+          console.log(response.page)
+          this.pagamentos = response.results || [];
+          this.currentPage = response.page?.currentPage!;
+          this.pageSize = response.page?.pageSize!;
+          this.nextPage = response.page?.nextPage;
+          this.previousPage = response.page?.previousPage;
+          this.totalElements = response.page?.totalElements!;
+          this.totalPages = Math.ceil(this.totalElements/this.pageSize);
+          console.log(this.totalElements, this.totalPages, "Calculo total page", this.totalPages)
         },
         error: (err) => {
           this.error = err;
@@ -85,22 +134,22 @@ export class PagamentoListComponent implements OnInit {
   }
 
   handleSelectPageSize(pageSize: string){
-    console.log("Pagina Selecionada:", Number(pageSize))
+    this.pageSize=Number(pageSize);
+    this.carregarPagamentos()
   }
 
-  handleSelectStatus(pageSize: string){
-    console.log("Pagina Selecionada:", Number(pageSize))
+  handleNextPage() {
+    this.page = this.nextPage!;
+    this.carregarPagamentos()
   }
-  nextPage() {
-    throw new Error('Method not implemented.');
+  handlePreviousPage() {
+    this.page = this.previousPage!;
+    this.carregarPagamentos()
   }
-  goToPage(page: number) {
-    throw new Error('Method not implemented.');
+  
+  goToPage(page: number){
+    this.page = page;
+    this.carregarPagamentos()
   }
-  getPageNumbers(): number[] {
-    throw new Error('Method not implemented.');
-  }
-  previousPage() {
-    throw new Error('Method not implemented.');
-  }
+
 }

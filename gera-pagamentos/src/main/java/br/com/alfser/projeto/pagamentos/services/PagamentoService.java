@@ -53,7 +53,7 @@ public class PagamentoService {
     public Page<Pagamento> listar(PagamentoFilterDTO filters, Pageable pageable){
         Query query = PagamentoCriteriaQuery.withFilters(filters).with(pageable);
         List<Pagamento> results = mongoTemplate.find(query, Pagamento.class);
-        Query countQuery = PagamentoCriteriaQuery.withFilters(filters);
+        Query countQuery = PagamentoCriteriaQuery.withFilters(filters).skip(-1).limit(-1);
         long total = mongoTemplate.count(countQuery, Pagamento.class);
         return PageableExecutionUtils.getPage(results, pageable, () -> total);
     }

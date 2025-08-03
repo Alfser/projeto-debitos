@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ErrorResponse, PagamentoCreateDTO, PagamentoDTO } from '../../lib/clients/gera-pagamento/GeraPagamentoApi';
 import {PagamentoApiService} from "../../lib/clients/services"
 import { Observable } from 'rxjs';
-import { PagamentoListParams } from '../../lib/clients/services/types';
+import { PagamentoListParams, ServiceResponsePagination } from '../../lib/clients/services/types';
 @Injectable({
   providedIn: 'root'
 })
@@ -10,12 +10,12 @@ export class PagamentoService {
   
   constructor() {}
 
-  listar(params: PagamentoListParams): Observable<PagamentoDTO[]> {
+  listar(params: PagamentoListParams): Observable<ServiceResponsePagination<PagamentoDTO, ErrorResponse>> {
     return new Observable(observer => {
       PagamentoApiService.pagamentoList(params)
         .then(response => {
           if(response.success){
-            observer.next(response.results || []);
+            observer.next(response);
             observer.complete();
           }else{
             observer.error(this.handleError(response.error))

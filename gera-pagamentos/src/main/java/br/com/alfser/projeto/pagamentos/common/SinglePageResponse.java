@@ -8,20 +8,27 @@ public record SinglePageResponse<T>(
         List<T> results,
         PaginationMetadata pagination
 ) {
+    public SinglePageResponse(Page<T> page) {
+        this(
+                page.getContent(),
+                new PaginationMetadata(page)
+        );
+    }
+
     public record PaginationMetadata(
             long totalElements,
             int pageSize,
             int currentPage,
-            int previousPage,
+            Integer previousPage,
             Integer nextPage
     ) {
         public PaginationMetadata(Page<?> page) {
             this(
                     page.getTotalElements(),
                     page.getSize(),
-                    page.getNumber(),
-                    Math.max(page.getNumber() - 1, 0),
-                    page.hasNext() ? page.getNumber() + 1 : null
+                    page.getNumber() + 1,
+                    page.hasPrevious() ? page.getNumber() : null,
+                    page.hasNext() ? page.getNumber() + 2 : null
             );
         }
     }
