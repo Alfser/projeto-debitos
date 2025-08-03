@@ -35,16 +35,16 @@
         </tr>
       </thead>
       <tbody>
-        @for (pagamento of padamentos; track $index) {
+        @for (pagamento of pagamentos; track $index) {
         <tr class="hover:bg-gray-50">
           <td class="py-3 px-4 border-b">
-            {{ pagamento.identificacao }}
+            {{ pagamento.cpfCnpj }}
           </td>
           <td class="py-3 px-4 border-b">
               {{ pagamento.metodoPagamento }}
           </td>
           <td class="py-3 px-4 border-b">
-              R$ {{ pagamento.valor.toFixed(2) }}
+              R$ {{ pagamento.valor?.toFixed(2) }}
           </td>
           <td class="py-3 px-4 border-b">
             <div class="flex justify-center rounded-xl opacity-70" [class]="getStatusClass(pagamento.status)">

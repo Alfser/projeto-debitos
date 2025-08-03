@@ -1,14 +1,14 @@
 import { geraPagamentoClient, processaPagamentoClient } from "../..";
-import { ErrorResponse, PagamentoCreateDTO, PagamentoDTO, RequestParams } from "../gera-pagamento/GeraPagamentoApi";
-import type {pagamentoListParams, ServiceResponse, ServiceResponsePagination } from "./types";
+import { ContentType, ErrorResponse, PagamentoCreateDTO, PagamentoDTO, RequestParams } from "../gera-pagamento/GeraPagamentoApi";
+import type {PagamentoListParams, ServiceResponse, ServiceResponsePagination } from "./types";
 
 export async function pagamentoList(
-    query?: pagamentoListParams,
+    query?: PagamentoListParams,
 	options?: RequestParams,
 ): Promise<ServiceResponsePagination<PagamentoDTO, ErrorResponse>> {
 	const response = await geraPagamentoClient.pagamento.listarPagamentos(
 		{...query },
-		options,
+		{...options, format: 'json'},
 	);
 
 	if (!response.ok) {
@@ -27,7 +27,7 @@ export async function pagamentoList(
 }
 
 export async function salvarPagamento(data: PagamentoCreateDTO): Promise<ServiceResponse<PagamentoDTO, ErrorResponse>>{
-    const response = await geraPagamentoClient.pagamento.salvarPagamento(data)
+    const response = await geraPagamentoClient.pagamento.salvarPagamento(data, {type: ContentType.Json})
     if(!response.ok){
         return{
             success: false,
@@ -43,7 +43,7 @@ export async function salvarPagamento(data: PagamentoCreateDTO): Promise<Service
 }
 
 export async function desativarPagamento(id: string): Promise<ServiceResponse<void, ErrorResponse>> {
-    const response = await geraPagamentoClient.pagamento.desativarPagamento(id)
+    const response = await geraPagamentoClient.pagamento.desativarPagamento(id, {type: ContentType.Json})
     if(!response.ok){
         return {
             success: false,
@@ -60,7 +60,7 @@ export async function desativarPagamento(id: string): Promise<ServiceResponse<vo
 export async function processarPagamento(idPagamento: number): Promise<ServiceResponse<void, ErrorResponse>> {
     const response = await processaPagamentoClient
         .processaPagamento
-        .processarPagamentosPendentesViaIdPagamaento({idPagamento: idPagamento})
+        .processarPagamentosPendentesViaIdPagamaento({idPagamento: idPagamento}, {type: ContentType.Json})
     if(!response.ok){
         return {
             success: false,

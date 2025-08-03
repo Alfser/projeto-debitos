@@ -9,6 +9,7 @@
  * ## SOURCE: https://github.com/acacode/swagger-typescript-api ##
  * ---------------------------------------------------------------
  */
+import { environment } from "../../../environments/environment";
 
 export interface ErrorResponse {
   /** @format date-time */
@@ -87,7 +88,7 @@ export enum ContentType {
 }
 
 export class HttpClient<SecurityDataType = unknown> {
-  public baseUrl: string = process.env.GERA_PAGAMENTO_API;
+  public baseUrl: string = environment.processaPagamentoApiUrl;
   private securityData: SecurityDataType | null = null;
   private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
   private abortControllers = new Map<CancelToken, AbortController>();

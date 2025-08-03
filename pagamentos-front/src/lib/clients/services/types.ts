@@ -45,7 +45,7 @@ export interface QueryParams<D> {
 	filters: D;
 }
 
-export interface pagamentoListParams extends PageParams{
+export interface PagamentoListParams extends PageParams{
     idPagamento?: number;
     cpfCnpj?: string;
     status?:
