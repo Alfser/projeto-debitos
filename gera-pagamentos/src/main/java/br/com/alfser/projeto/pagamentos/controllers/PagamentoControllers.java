@@ -9,6 +9,8 @@ import br.com.alfser.projeto.pagamentos.dtos.PagamentoUpdateStatusDTO;
 import br.com.alfser.projeto.pagamentos.models.Pagamento;
 import br.com.alfser.projeto.pagamentos.services.PagamentoService;
 import br.com.alfser.projeto.pagamentos.dtos.PagamentoDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "pagamento")
 @RestController
 @RequestMapping
 public class PagamentoControllers {
@@ -28,6 +31,7 @@ public class PagamentoControllers {
 
     @GetMapping("/lista-pagamentos")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(operationId = "listar-pagamentos")
     public SinglePageResponse<PagamentoDTO> listarPagamentos(
             @RequestParam(required = false) Long idPagamento,
             @RequestParam(required = false) String cpfCnpj,
@@ -49,19 +53,22 @@ public class PagamentoControllers {
 
     @PostMapping("/pagamentos")
     @ResponseStatus(HttpStatus.CREATED)
-    public PagamentoDTO salvarPagamento(@Valid PagamentoCreateDTO pagamentoCreateDTO){
+    @Operation(operationId = "salvar-pagamento")
+    public PagamentoDTO salvarPagamento(@Valid @RequestBody PagamentoCreateDTO pagamentoCreateDTO){
         var pagamentoCadastrado = pagamentoService.criar(pagamentoCreateDTO.toPagamentoModel());
         return PagamentoDTO.fromPagamentoModel(pagamentoCadastrado);
     }
 
     @DeleteMapping("/pagamentos/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(operationId = "desativar-pagamento")
     public void desativarPagamento(@PathVariable String id){
         pagamentoService.desativarPagamento(new ObjectId(id));
     }
 
     @PutMapping("/pagamento/status")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(operationId = "atualizar-status-pagamento")
     public void atualizarStatusPagamento(@Valid PagamentoUpdateStatusDTO updateStatusDTO){
         pagamentoService.atualizarStatusPagamento(updateStatusDTO.getIdPagamento(), updateStatusDTO.getStatus());
     }

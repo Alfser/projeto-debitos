@@ -3,15 +3,13 @@ package br.com.alfser.projeto.processa_pagamentos.controllers
 import br.com.alfser.projeto.processa_pagamentos.dtos.PagamentoDTO
 import br.com.alfser.projeto.processa_pagamentos.dtos.ProcessarPagamentoDTO
 import br.com.alfser.projeto.processa_pagamentos.services.PagamentoService
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 
+@Tag(name = "processa-pagamento")
 @RestController
 @RequestMapping
 class PagamentoController (val pagamentoService: PagamentoService){
@@ -22,6 +20,7 @@ class PagamentoController (val pagamentoService: PagamentoService){
      * **/
     @GetMapping("/pagamentos-pendentes")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(operationId = "listar-pagamentos-pendentes")
     fun listarPagamentos() = pagamentoService.finAllPagamentosPendentes().map { pagamento -> PagamentoDTO.fromPagamentoModel(pagamento) }
 
     /**
@@ -29,6 +28,7 @@ class PagamentoController (val pagamentoService: PagamentoService){
      * **/
     @PostMapping("/processa-pagamentos-pententes")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(operationId = "processar-pagamentos-pendentes")
     fun processarPagamentosPendentes() = pagamentoService.processarPagamentosPendentes()
 
     /**
@@ -36,5 +36,6 @@ class PagamentoController (val pagamentoService: PagamentoService){
      * **/
     @PostMapping("processa-pagamentos-via-id")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(operationId = "processar-via-id-pagamento")
     fun processarPagamentoByIdPagamento(@RequestBody dto: ProcessarPagamentoDTO) = pagamentoService.processarByIdPagamento(dto.idPagamento)
 }
