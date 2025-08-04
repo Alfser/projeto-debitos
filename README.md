@@ -57,7 +57,7 @@ docker-compose up -d
 
 | Serviços               | url                          | Descrição                          |
 |-----------------------|-----------------------------------|--------------------------------------|
-| **Pagamentos Frontend**    | `http://localhost:8080/api/v1/` | Documentação Swagger OpenAPI 3 |
+| **Pagamentos Frontend**    | `http://localhost:8080/api/v1/` | Frontend Angular |
 | **Generação de Pagamentos API**    | `http://localhost:8090/api/v1/` | Documentação Swagger OpenAPI 3              |
 | **Processamento de Pagamentos API**    | `http://localhost:8091/api/v1/` | Documentação Swagger OpenAPI 3 |
 | **MongoDB**          | `mongodb://localhost:27018`      | Banco de dados Mongo   |
