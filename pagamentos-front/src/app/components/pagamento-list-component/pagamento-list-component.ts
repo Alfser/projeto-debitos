@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { ErrorResponse, PagamentoDTO } from '../../../lib/clients/gera-pagamento/GeraPagamentoApi';
-import { PagamentoService } from '../../service/pagamento-service';
-import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, finalize, Subject, takeUntil } from 'rxjs';
+import { ErrorResponse, PagamentoDTO } from '../../../lib/clients/gera-pagamento/GeraPagamentoApi';
 import { PagamentoListParams } from '../../../lib/clients/services/types';
-import { ObjectUtil } from '../../utils';
 import { NotificationService } from '../../service/notification-service';
+import { PagamentoService } from '../../service/pagamento-service';
+import { ObjectUtil } from '../../utils';
+import { PagamentoComponent } from "../pagamento-component/pagamento-component";
 
 type StatusPagamento = 'PENDENTE_PROCESSAMENTO' | 'PROCESSADO_SUCESSO' | 'PROCESSADO_FALHA'
 
 @Component({
   selector: 'pagamento-list-component',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, PagamentoComponent],
   templateUrl: './pagamento-list-component.html',
   styleUrl: './pagamento-list-component.css'
 })
@@ -28,8 +29,6 @@ export class PagamentoListComponent implements OnInit {
   statusPagamentos : StatusPagamento[] = ["PENDENTE_PROCESSAMENTO", "PROCESSADO_SUCESSO", "PROCESSADO_FALHA"];
   pagamentos: PagamentoDTO[] = []
   loading = false;
-  error: any = null;
-
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -65,7 +64,6 @@ export class PagamentoListComponent implements OnInit {
   
   carregarPagamentos(): void {
     this.loading = true;
-    this.error = null;
     const searchParams: PagamentoListParams = {
       cpfCnpj: this.searchForm.get("searchByIdentificacao")?.value,
       status: this.searchForm.get("searcByStatus")?.value,
@@ -90,10 +88,8 @@ export class PagamentoListComponent implements OnInit {
           this.totalPages = Math.ceil(this.totalElements/this.pageSize);
         },
         error: (err) => {
-          this.error = err;
           this.onError(err);
         },
-        complete: () => console.log('Request completed')
       });
   }
 
@@ -106,13 +102,9 @@ export class PagamentoListComponent implements OnInit {
           debounceTime(3000) //Espera para atualizar pagamento consumido do kafka
           this.carregarPagamentos()
           const index = this.pagamentos.findIndex(p => p.idPagamento === idPagamento);
-          if (index !== -1) {
-            console.log("Pagamento processado: ", this.pagamentos[index])
-          }
           this.onSuccess(`Pagamento ${this.pagamentos[index].idPagamento} processado com sucesso`)
         },
         error: (err) => {
-          this.error = err;
           this.onError(err);
         }
       });
@@ -127,10 +119,8 @@ export class PagamentoListComponent implements OnInit {
           this.carregarPagamentos()
           const index = this.pagamentos.findIndex(p => p.id === id)
           this.onSuccess(`Pagamento ${this.pagamentos[index].idPagamento} inativado`)
-          console.log("Pagamento inativado: ", this.pagamentos[index])
         },
         error: (err) => {
-          this.error = err;
           this.onError(err);
         }
       })
@@ -175,6 +165,15 @@ export class PagamentoListComponent implements OnInit {
   goToPage(page: number){
     this.page = page;
     this.carregarPagamentos()
+  }
+
+  onPagamentoCriado(pagamento: PagamentoDTO) {
+    this.carregarPagamentos()
+    this.notification.show({
+      message: `Pagamento gerado ${pagamento.idPagamento} e pendente para processamento`,
+      type: 'info',
+      duration: 3000
+    })
   }
 
   onSuccess(message: string) {

@@ -27,7 +27,7 @@ export async function pagamentoList(
 }
 
 export async function salvarPagamento(data: PagamentoCreateDTO): Promise<ServiceResponse<PagamentoDTO, ErrorResponse>>{
-    const response = await geraPagamentoClient.pagamento.salvarPagamento(data, {type: ContentType.Json})
+    const response = await geraPagamentoClient.pagamento.salvarPagamento(data, {format: 'json', type: ContentType.Json})
     if(!response.ok){
         return{
             success: false,

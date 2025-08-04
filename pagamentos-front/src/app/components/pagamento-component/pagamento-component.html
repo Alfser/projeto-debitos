@@ -1,0 +1,142 @@
+<div *ngIf="isOpen" class="fixed inset-0 flex items-center justify-center p-4 z-30 modal-overlay">
+  <!-- Backdrop with blur effect -->
+  <div 
+    class="fixed inset-0 bg-opacity-10 backdrop-blur-sm"
+    (click)="fecharAoClickFora($event)"
+  ></div>
+    
+  <!-- Modal container -->
+  <div class="bg-white rounded-lg shadow-xl w-[70vw] relative z-10">
+    <div class="flex justify-between items-center border-b p-4">
+        <div class="flex col-auto gap-2 items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" stroke-width="2" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16v-4m0-4h.01" />
+            </svg>
+            <h3 class="text-lg font-semibold text-gray-800">Novo Pagamento</h3>
+        </div>
+      <button 
+        (click)="fechar()"
+        class="text-gray-500 hover:text-gray-700"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Corpo do Modal -->
+    <div class="p-6">
+      <form [formGroup]="form" (ngSubmit)="submit()" >
+          <div class="flex col-auto mx-4 my-8 space-x-10">
+            <!-- CPF/CNPJ -->
+            <div class="w-full">
+                <label for="cpfCnpj" class="block text-sm font-medium text-gray-700 mb-1">CPF/CNPJ</label>
+                <input
+                    id="cpfCnpj"
+                    type="text"
+                    formControlName="cpfCnpj"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="000.000.000-00 ou 00.000.000/0000-00"
+                >
+                @if(form.get('cpfCnpj')?.invalid && form.get('cpfCnpj')?.touched){
+                    <div class="text-red-500 text-xs mt-1">
+                        CPF/CNPJ é obrigatório (mínimo 11 caracteres)
+                    </div>
+                }
+            </div>
+            <!-- Método de Pagamento -->
+             <div class="w-full">
+                 <label class="block text-sm font-medium text-gray-700 mb-1">Método de Pagamento</label>
+                 <select
+                     formControlName="metodoPagamento"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                 >
+                     <option value="" disabled selected>Selecione...</option>
+                     @for (metodo of metodosPagamento; track $index) {
+                         <option [value]="metodo.value">
+                         {{ metodo.label }}
+                         </option>
+                     }
+                 </select>
+                 @if (form.get('metodoPagamento')?.invalid && form.get('metodoPagamento')?.touched){
+                     <div class="text-red-500 text-xs mt-1">
+                         Selecione um método de pagamento
+                     </div>
+                 }
+             </div>
+        </div>
+        
+        <div class="flex col-auto mx-4 my-8 space-x-10">
+            <!-- Número do Cartão (condicional) -->
+            <div class="mb-4 w-full">
+                <label for="numeroCartao" class="block text-sm font-medium text-gray-700 mb-1">Número do Cartão</label>
+                <input
+                    id="numeroCartao"
+                    type="text"
+                    formControlName="numeroCartao"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="0000 0000 0000 0000"
+                >
+                @if((metodoSelecionado() === 'CARTAO_CREDITO' || metodoSelecionado() === 'CARTAO_DEBITO') && (!form.get('numeroCartao')?.value || form.get('numeroCartao')?.errors)){
+                    <div class="text-red-500 text-xs mt-1">
+                        Número do cartão é obrigatório
+                    </div>
+                }
+            </div>
+    
+            <!-- Valor -->
+            <div class="mb-6 w-full">
+                <label for="valor" class="block text-sm font-medium text-gray-700 mb-1">Valor (R$)</label>
+                <div class="relative rounded-md shadow-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span class="text-gray-500">R$</span>
+                    </div>
+                    <input
+                    id="valor"
+                    type="number"
+                    formControlName="valor"
+                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="0,00"
+                    min="0.01"
+                    step="0.01"
+                    >
+                </div>
+                @if(form.get('valor')?.invalid && form.get('valor')?.touched){
+                    <div class="text-red-500 text-xs mt-1">
+                        Valor deve ser maior que zero
+                    </div>
+                }
+            </div>
+        </div>
+        <!-- Rodapé do Modal -->
+        <div class="flex justify-between space-x-3 border-t pt-4">
+            <button
+                type="submit"
+                [disabled]="form.invalid || loading"
+                class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-550 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-25 disabled:cursor-not-allowed"
+                >  
+                <div class="flex col-auto justify-center items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Confirmar Pagamento
+                </div>
+            </button>
+            <button
+                type="button"
+                (click)="fechar()"
+                class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+                Cancelar
+            </button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+
+
+
+
