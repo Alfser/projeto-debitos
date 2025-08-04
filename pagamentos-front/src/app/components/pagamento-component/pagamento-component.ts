@@ -6,6 +6,7 @@ import { finalize } from 'rxjs';
 import { NotificationService } from '../../services/notification-service';
 import { CommonModule } from '@angular/common';
 import { MaskUtils } from '../../utils';
+import { currencyValueValidator } from '../../validators';
 
 type PagamentoFormControls = {
   cpfCnpj: FormControl<string>;
@@ -44,7 +45,7 @@ export class PagamentoComponent {
     }),
     numeroCartao: new FormControl('', [Validators.minLength(19), Validators.maxLength(19)]),
     valor: new FormControl('0,00', {
-      validators: [Validators.required],
+      validators: [Validators.required, currencyValueValidator],
       nonNullable: true
     })
   });
