@@ -24,14 +24,6 @@ class PagamentoController (val pagamentoService: PagamentoService){
     fun listarPagamentos() = pagamentoService.finAllPagamentosPendentes().map { pagamento -> PagamentoDTO.fromPagamentoModel(pagamento) }
 
     /**
-     * Processa todos os pagamentos que ainda estão pendentes
-     * **/
-    @PostMapping("/processa-pagamentos-pententes")
-    @ResponseStatus(HttpStatus.OK)
-    @Operation(operationId = "processar-pagamentos-pendentes")
-    fun processarPagamentosPendentes() = pagamentoService.processarPagamentosPendentes()
-
-    /**
      * Processa o pagamento identificado no idPagamento, se existir
      * **/
     @PostMapping("processa-pagamentos-via-id")
