@@ -1,14 +1,15 @@
 # Serviço de Gerenciamento de Pagamentos(Desafio Sefa)
 ## Tecnologias usadas
 ### API de Gração de Pagamentos
-- Java jdk 17 e SpringBoot 3(maven)
+- Java jdk 17 e SpringBoot 3
 - Mongo 8
 - Kafka 4
+- maven
 ### API de Processamento de Pagamentos
 - Kotlin jdk 17 e SpringBoot 3(gradle)
 - Mongo 8
 - kafka 4
-- Docker
+- gradle
 ### Frontend
 - Angular 20
 - TypeScript
