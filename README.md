@@ -36,7 +36,7 @@
 ```bash
 git clone https://github.com/Alfser/projeto-pagamentos.git
 ```
-- As variáveis padrão de exemplo já possuem a configuração padrão para rodar toda aplicação no docker compose
+- As variáveis padrão de .env.exemplo já possuem as configurações padrão para rodar toda aplicação no docker compose
 - Na raiz dos projetos das APIs inicialize as variáveis de ambiente, como segue(no linux)
 ```bash
 cp .env.exemplo .env &&
