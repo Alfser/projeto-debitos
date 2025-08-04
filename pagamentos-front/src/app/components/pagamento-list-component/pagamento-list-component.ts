@@ -99,10 +99,11 @@ export class PagamentoListComponent implements OnInit {
       .pipe(finalize(() => this.loading = false))
       .subscribe({
         next: () => {
-          debounceTime(3000) //Espera para atualizar pagamento consumido do kafka
-          this.carregarPagamentos()
-          const index = this.pagamentos.findIndex(p => p.idPagamento === idPagamento);
-          this.onSuccess(`Pagamento ${this.pagamentos[index].idPagamento} processado com sucesso`)
+           //Espera para atualizar pagamento consumido do kafka
+           const index = this.pagamentos.findIndex(p => p.idPagamento === idPagamento);
+           this.onSuccess(`Pagamento ${this.pagamentos[index].idPagamento} processado com sucesso`)
+           this.onSuccess("Aguarde 3 segundos para o serviço atualizar o pagamento", 'info')
+           setTimeout(()=> this.carregarPagamentos(), 3000)
         },
         error: (err) => {
           this.onError(err);
