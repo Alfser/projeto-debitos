@@ -1,8 +1,6 @@
 import { Component, Signal } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Notification, NotificationService } from '../../service/notification-service';
-import { AsyncPipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Notification, NotificationService } from '../../services/notification-service';
 
 @Component({
   selector: 'app-notification-component',
@@ -13,7 +11,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 export class NotificationComponent {
   notifications: Signal<Notification[]>;
 
-  constructor(private notificationService: NotificationService) {
+  constructor(readonly notificationService: NotificationService) {
     this.notifications = toSignal(this.notificationService.notifications$, {initialValue: []});
   }
 

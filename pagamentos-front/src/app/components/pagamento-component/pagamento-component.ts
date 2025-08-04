@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ErrorResponse, PagamentoCreateDTO, PagamentoDTO } from '../../../lib/clients/gera-pagamento/GeraPagamentoApi';
-import { PagamentoService } from '../../service/pagamento-service';
+import { PagamentoService } from '../../services/pagamento-service';
 import { finalize } from 'rxjs';
-import { NotificationService } from '../../service/notification-service';
+import { NotificationService } from '../../services/notification-service';
 import { CommonModule } from '@angular/common';
 
 type PagamentoFormControls = {

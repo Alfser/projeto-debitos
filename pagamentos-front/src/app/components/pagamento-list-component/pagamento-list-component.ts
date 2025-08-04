@@ -3,8 +3,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, finalize, Subject, takeUntil } from 'rxjs';
 import { ErrorResponse, PagamentoDTO } from '../../../lib/clients/gera-pagamento/GeraPagamentoApi';
 import { PagamentoListParams } from '../../../lib/clients/services/types';
-import { NotificationService } from '../../service/notification-service';
-import { PagamentoService } from '../../service/pagamento-service';
+import { NotificationService } from '../../services/notification-service';
+import { PagamentoService } from '../../services/pagamento-service';
 import { ObjectUtil } from '../../utils';
 import { PagamentoComponent } from "../pagamento-component/pagamento-component";
 
@@ -29,7 +29,6 @@ export class PagamentoListComponent implements OnInit {
   statusPagamentos : StatusPagamento[] = ["PENDENTE_PROCESSAMENTO", "PROCESSADO_SUCESSO", "PROCESSADO_FALHA"];
   pagamentos: PagamentoDTO[] = []
   loading = false;
-  private destroy$ = new Subject<void>();
 
   constructor(
     private pagamentoService: PagamentoService,
@@ -54,7 +53,6 @@ export class PagamentoListComponent implements OnInit {
         distinctUntilChanged((prev, curr) => 
           JSON.stringify(prev) === JSON.stringify(curr)
         ),
-        takeUntil(this.destroy$)
       )
       .subscribe(() => {
         this.currentPage = 0;

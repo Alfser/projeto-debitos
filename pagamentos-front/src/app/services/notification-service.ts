@@ -11,7 +11,7 @@ export interface Notification {
   providedIn: 'root'
 })
 export class NotificationService {
-  private notifications = new BehaviorSubject<Notification[]>([]);
+  readonly notifications = new BehaviorSubject<Notification[]>([]);
   notifications$ = this.notifications.asObservable();
 
   show(notification: Notification) {

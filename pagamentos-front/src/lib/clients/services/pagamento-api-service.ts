@@ -43,7 +43,7 @@ export async function salvarPagamento(data: PagamentoCreateDTO): Promise<Service
 }
 
 export async function desativarPagamento(id: string): Promise<ServiceResponse<void, ErrorResponse>> {
-    const response = await geraPagamentoClient.pagamento.desativarPagamento(id, {type: ContentType.Json})
+    const response = await geraPagamentoClient.pagamento.desativarPagamento(id, {format:'json', type: ContentType.Json})
     if(!response.ok){
         return {
             success: false,
@@ -60,7 +60,7 @@ export async function desativarPagamento(id: string): Promise<ServiceResponse<vo
 export async function processarPagamento(idPagamento: number): Promise<ServiceResponse<void, ErrorResponse>> {
     const response = await processaPagamentoClient
         .processaPagamento
-        .processarPagamentosPendentesViaIdPagamaento({idPagamento: idPagamento}, {type: ContentType.Json})
+        .processarPagamentosPendentesViaIdPagamaento({idPagamento: idPagamento}, {format: 'json', type: ContentType.Json})
     if(!response.ok){
         return {
             success: false,
