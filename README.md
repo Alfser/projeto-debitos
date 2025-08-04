@@ -32,6 +32,10 @@
 ![diagrama de fluxo](./doc/imagens/diagrama-fluxo.png)
 
 ### Iniciando a Aplicação com docker compose
+- Clone o projeto na sua maquina
+```bash
+git clone https://github.com/Alfser/projeto-pagamentos.git
+```
 - As variáveis padrão de exemplo já possuem a configuração padrão para rodar toda aplicação no docker compose
 - Na raiz dos projetos das APIs inicialize as variáveis de ambiente, como segue(no linux)
 ```bash
@@ -49,13 +53,12 @@ ou
 docker-compose build --no-cache &&
 docker-compose up -d
 ```
-
 ## 4. Serviços
 
 | Serviços               | url                          | Descrição                          |
 |-----------------------|-----------------------------------|--------------------------------------|
-| **Pagamentos Frontend**    | `http://localhost:8090/api/v1/` | Documentação Swagger OpenAPI 3 |
-| **Generação de Pagamentos API**    | `http://localhost:8091/api/v1/` | Documentação Swagger OpenAPI 3              |
-| **Processamento de Pagamentos API**    | `http://localhost:8080/api/v1/` | Documentação Swagger OpenAPI 3 |
-| **MongoDB**          | `mongodb://localhost:27017`      | Banco de dados Mongo   |
-| **Kafka**            | `localhost(broker):9092`         | Broker Kafka                        |
+| **Pagamentos Frontend**    | `http://localhost:8080/api/v1/` | Documentação Swagger OpenAPI 3 |
+| **Generação de Pagamentos API**    | `http://localhost:8090/api/v1/` | Documentação Swagger OpenAPI 3              |
+| **Processamento de Pagamentos API**    | `http://localhost:8091/api/v1/` | Documentação Swagger OpenAPI 3 |
+| **MongoDB**          | `mongodb://localhost:27018`      | Banco de dados Mongo   |
+| **Kafka**            | `localhost:9092`         | Broker Kafka                        |
