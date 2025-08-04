@@ -44,7 +44,7 @@ export class PagamentoComponent {
     }),
     numeroCartao: new FormControl('', [Validators.minLength(19), Validators.maxLength(19)]),
     valor: new FormControl('0,00', {
-      validators: [Validators.required, Validators.min(0.01)],
+      validators: [Validators.required],
       nonNullable: true
     })
   });

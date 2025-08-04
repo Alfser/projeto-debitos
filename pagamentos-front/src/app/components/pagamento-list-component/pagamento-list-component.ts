@@ -159,6 +159,7 @@ export class PagamentoListComponent implements OnInit {
   handleSelectPageSize(pageSize: string){
     this.pageSize=Number(pageSize);
     this.carregarPagamentos()
+    this.currentPage = 1;
   }
 
   handleNextPage() {
