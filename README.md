@@ -23,7 +23,7 @@
 ### API de geração de pagamentos
 ![gera](./doc/imagens/api-gera-pagamentos.png)
 ---
-### API de criação de pagamentos
+### API de processamento de pagamentos
 ![processa](./doc/imagens/api-processa-pagamentos.png)
 ### Frontend de pagamentos
 ![front-lista](./doc/imagens/tela-listagem.png)
