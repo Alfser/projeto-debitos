@@ -118,7 +118,7 @@ export class PagamentoListComponent implements OnInit {
         next: ()=>{
           this.carregarPagamentos()
           const index = this.pagamentos.findIndex(p => p.id === id)
-          this.onSuccess(`Pagamento ${this.pagamentos[index].idPagamento} inativado`)
+          this.onSuccess(`Pagamento ${this.pagamentos[index].idPagamento} inativado`, 'info')
         },
         error: (err) => {
           this.onError(err);
@@ -176,10 +176,10 @@ export class PagamentoListComponent implements OnInit {
     })
   }
 
-  onSuccess(message: string) {
+  onSuccess(message: string, type:'success' | 'error' | 'info' | 'warning'='success') {
     this.notification.show({
       message: message,
-      type: 'success',
+      type: type,
       duration: 3000
     });
   }

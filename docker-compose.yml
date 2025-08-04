@@ -82,6 +82,18 @@ services:
     ports:
       - "8091:8091"
 
+  pagamentos-ui:
+    restart: always
+    build:
+      context: pagamentos-front
+      dockerfile: Dockerfile
+    image: pagamentos-ui
+    ports:
+      - "8080:8080"
+    depends_on:
+      - servico-gera-pagamentos
+      - servico-processa-pagamentos
+
 volumes:
   mongo_data:
     driver: local
