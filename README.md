@@ -8,11 +8,16 @@
 - Kotlin jdk 17 e SpringBoot 3(gradle)
 - Mongo 8
 - kafka 4
+- Docker
 ### Frontend
 - Angular 20
 - TypeScript
 - Tailwind 4
 - Gerador de client a partir da doc do swagger(lib swagger-typescript-api)
+### Geral
+- Dockerfile
+- Docker Compose
+- Toda aplicação está em um docker compose na raiz do projeto
 ## Prints
 ### API de geração de pagamentos
 ![gera](./doc/imagens/api-gera-pagamentos.png)
@@ -24,3 +29,32 @@
 ![front-formulario](./doc/imagens/tela-formulario.png)
 ## Fluxo da Aplicação
 ![diagrama de fluxo](./doc/imagens/diagrama-fluxo.png)
+
+### Iniciando a Aplicação com docker compose
+- As variáveis padrão de exemplo já possuem a configuração padrão para rodar toda aplicação no docker compose
+- Na raiz dos projetos das APIs inicialize as variáveis de ambiente, como segue(no linux)
+```bash
+cp .env.exemplo .env
+cp gera-pagamentos/.env.exemplo && cp gera-pagamentos/.env
+cp processa-pagamentos/.env.exemplo && cp processa-pagamentos/.env
+```
+- Depois execute os comando docker para construir a imagem e subir os containers(linux/windows)
+```bash
+docker compose build
+docker compose up -d
+```
+ou
+```bash
+docker-compose build
+docker-compose up -d
+```
+
+## 4. Serviços
+
+| Serviços               | url                          | Descrição                          |
+|-----------------------|-----------------------------------|--------------------------------------|
+| **Pagamentos Frontend**    | `http://localhost:8090/api/v1/` | Documentação Swagger OpenAPI 3 |
+| **Generação de Pagamentos API**    | `http://localhost:8090/api/v1/` | Documentação Swagger OpenAPI 3              |
+| **Processamento de Pagamentos API**    | `http://localhost:8090/api/v1/` | Documentação Swagger OpenAPI 3 |
+| **MongoDB**          | `mongodb://localhost:27017`      | Banco de dados Mongo   |
+| **Kafka**            | `localhost(broker):9092`         | Broker Kafka                        |
