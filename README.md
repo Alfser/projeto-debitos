@@ -34,18 +34,18 @@
 - As variáveis padrão de exemplo já possuem a configuração padrão para rodar toda aplicação no docker compose
 - Na raiz dos projetos das APIs inicialize as variáveis de ambiente, como segue(no linux)
 ```bash
-cp .env.exemplo .env
-cp gera-pagamentos/.env.exemplo && cp gera-pagamentos/.env
-cp processa-pagamentos/.env.exemplo && cp processa-pagamentos/.env
+cp .env.exemplo .env &&
+cp gera-pagamentos/.env.exemplo gera-pagamentos/.env &&
+cp processa-pagamentos/.env.exemplo processa-pagamentos/.env
 ```
 - Depois execute os comando docker para construir a imagem e subir os containers(linux/windows)
 ```bash
-docker compose build
+docker compose build --no-cache &&
 docker compose up -d
 ```
 ou
 ```bash
-docker-compose build
+docker-compose build --no-cache &&
 docker-compose up -d
 ```
 
