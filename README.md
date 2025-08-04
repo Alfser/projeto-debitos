@@ -60,5 +60,5 @@ docker-compose up -d
 | **Pagamentos Frontend**    | [http://localhost:8080](http:/localhost:8080) | Frontend Angular |
 | **Generação de Pagamentos API**    | [http://localhost:8090/api/v1/](http://localhost:8090/api/v1/) | Documentação Swagger OpenAPI 3              |
 | **Processamento de Pagamentos API**    | [http://localhost:8091/api/v1/](http://localhost:8091/api/v1/) | Documentação Swagger OpenAPI 3 |
-| **MongoDB**          | `mongodb://localhost:27018 mongodb://mongodb:27018`      | Banco de dados Mongo   |
+| **MongoDB**          | `mongodb://localhost:27017 mongodb://mongodb:27017`      | Banco de dados Mongo   |
 | **Kafka**            | `localhost:9092 broker:9092`         | Broker Kafka                        |
