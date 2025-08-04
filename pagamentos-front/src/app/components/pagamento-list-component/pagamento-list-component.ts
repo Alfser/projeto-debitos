@@ -5,7 +5,7 @@ import { ErrorResponse, PagamentoDTO } from '../../../lib/clients/gera-pagamento
 import { PagamentoListParams } from '../../../lib/clients/services/types';
 import { NotificationService } from '../../services/notification-service';
 import { PagamentoService } from '../../services/pagamento-service';
-import { ObjectUtil } from '../../utils';
+import { MaskUtils, ObjectUtil } from '../../utils';
 import { PagamentoComponent } from "../pagamento-component/pagamento-component";
 
 type StatusPagamento = 'PENDENTE_PROCESSAMENTO' | 'PROCESSADO_SUCESSO' | 'PROCESSADO_FALHA'
@@ -30,6 +30,15 @@ export class PagamentoListComponent implements OnInit {
   pagamentos: PagamentoDTO[] = []
   loading = false;
 
+  applyCpfCnpjMask(value: string): string {
+      return MaskUtils.maskCpfCnpj(value);
+  }
+
+  applyCurrencyMask(value: string): string {
+    let valueMasked = MaskUtils.maskCurrency(value)
+    return valueMasked;
+  }
+
   constructor(
     private pagamentoService: PagamentoService,
     private notification: NotificationService,
@@ -40,7 +49,7 @@ export class PagamentoListComponent implements OnInit {
       searcByStatus: undefined,
     })
   }
-  
+
   ngOnInit(): void {
     this.setupSearchListener();
     this.carregarPagamentos();
@@ -50,7 +59,7 @@ export class PagamentoListComponent implements OnInit {
     this.searchForm.valueChanges
       .pipe(
         debounceTime(300),
-        distinctUntilChanged((prev, curr) => 
+        distinctUntilChanged((prev, curr) =>
           JSON.stringify(prev) === JSON.stringify(curr)
         ),
       )
@@ -59,7 +68,7 @@ export class PagamentoListComponent implements OnInit {
         this.carregarPagamentos();
       });
   }
-  
+
   carregarPagamentos(): void {
     this.loading = true;
     const searchParams: PagamentoListParams = {
@@ -69,7 +78,7 @@ export class PagamentoListComponent implements OnInit {
       size: this.pageSize
     };
 
-    // Remove valores undefined/null 
+    // Remove valores undefined/null
     ObjectUtil.cleanParams<PagamentoListParams>(searchParams)
 
     this.pagamentoService.listar(searchParams)
@@ -160,7 +169,7 @@ export class PagamentoListComponent implements OnInit {
     this.page = this.previousPage!;
     this.carregarPagamentos()
   }
-  
+
   goToPage(page: number){
     this.page = page;
     this.carregarPagamentos()

@@ -5,6 +5,7 @@ import br.com.alfser.projeto.pagamentos.common.MetodoPagamento;
 import br.com.alfser.projeto.pagamentos.models.Pagamento;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import org.bson.types.ObjectId;
 
@@ -15,11 +16,14 @@ import java.math.BigDecimal;
 public class PagamentoCreateDTO {
 
     @NotBlank
+    @Positive
+    @Pattern(regexp = "\\d+", message = "Inválido: Somente digitos são permitidos")
     private String cpfCnpj;
 
     @NotNull
     private MetodoPagamento metodoPagamento;
 
+    @Pattern(regexp = "\\d+", message = "Inválido: Somente digitos são permitidos")
     private String numeroCartao;
 
     @NotNull

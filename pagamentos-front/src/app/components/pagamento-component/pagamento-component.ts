@@ -5,12 +5,13 @@ import { PagamentoService } from '../../services/pagamento-service';
 import { finalize } from 'rxjs';
 import { NotificationService } from '../../services/notification-service';
 import { CommonModule } from '@angular/common';
+import { MaskUtils } from '../../utils';
 
 type PagamentoFormControls = {
   cpfCnpj: FormControl<string>;
   metodoPagamento: FormControl<'BOLETO' | 'PIX' | 'CARTAO_CREDITO' | 'CARTAO_DEBITO'>;
   numeroCartao: FormControl<string | null>;
-  valor: FormControl<number>;
+  valor: FormControl<string>;
 };
 
 @Component({
@@ -34,30 +35,51 @@ export class PagamentoComponent {
 
   form = new FormGroup<PagamentoFormControls>({
     cpfCnpj: new FormControl('', {
-      validators: [Validators.required, Validators.minLength(11)],
+      validators: [Validators.required, Validators.minLength(11), Validators.maxLength(18)],
       nonNullable: true
     }),
     metodoPagamento: new FormControl('BOLETO', {
       validators: [Validators.required],
       nonNullable: true
     }),
-    numeroCartao: new FormControl(null),
-    valor: new FormControl(0, {
+    numeroCartao: new FormControl('', [Validators.minLength(19), Validators.maxLength(19)]),
+    valor: new FormControl('0,00', {
       validators: [Validators.required, Validators.min(0.01)],
       nonNullable: true
     })
   });
 
+  applyCpfCnpjMask(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let value = MaskUtils.maskCpfCnpj(input.value)
+    input.value = value;
+    this.form.get('cpfCnpj')?.setValue(value);
+  }
+
+  applyCardMask(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let value = MaskUtils.maskCard(input.value)
+    input.value = value;
+    this.form.get('numeroCartao')?.setValue(value);
+  }
+
+  applyCurrencyMask(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let value = MaskUtils.maskCurrency(input.value)
+    input.value = value;
+    this.form.get('valor')?.setValue(value);
+  }
+
   constructor(
-    private pagamentoService: PagamentoService,
-    private notification: NotificationService,
+    readonly pagamentoService: PagamentoService,
+    readonly notification: NotificationService,
   ){}
 
   abrirModal() {
     this.isOpen = true;
     this.form.reset({
       metodoPagamento: 'BOLETO',
-      valor: 0
+      valor: '0,0'
     });
   }
 
@@ -94,7 +116,14 @@ export class PagamentoComponent {
 
   submit() {
     if (this.form.valid) {
-      this.salvar(this.form.value as PagamentoCreateDTO)
+      let pagamento: PagamentoCreateDTO = {
+        ...this.form.value,
+        cpfCnpj: MaskUtils.onlyDigits(this.form.get('cpfCnpj')?.value),
+        numeroCartao: MaskUtils.onlyDigits(this.form.get('numeroCartao')?.value || ""),
+        valor: MaskUtils.parseCurrencyToDecimal(this.form.get('valor')?.value || "0,00")
+      } as PagamentoCreateDTO
+
+      this.salvar(pagamento)
     } else {
       this.form.markAllAsTouched();
     }
@@ -109,7 +138,7 @@ export class PagamentoComponent {
       this.pagamentoCriado.emit(data);
       this.fechar()
     }
-  
+
     onError(error: ErrorResponse) {
       this.notification.show({
         message: error.details?.toString()|| "Error ao realizar operação",
